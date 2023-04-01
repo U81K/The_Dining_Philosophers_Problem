@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/03/31 01:09:28 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/01 02:18:40 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,47 +47,55 @@ int	args_checker(int ac, char **av, t_ph *ph)
 	return (0);	
 }
 
-typedef struct	s_PH_Data
+unsigned long time_cal(void)
 {
-	int index;
-	pthread_mutex_t *left_fork;
-	pthread_mutex_t *right_fork;
-}				t_PH_Data;
+	unsigned long i;
+	struct timeval current_time;
+
+	gettimeofday(&current_time, NULL);
+	i = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (i);
+}
 
 void	*routine(void *arg)
 {
-	// int i;
 	t_PH_Data *data;
 	
 	data = (t_PH_Data *)arg;
-	// i =  *(int *)arg;
-	// int left_fork = fork_indices[i];
-  	// int right_fork = fork_indices[(i + 1) % NUM_FORKS];
-	// pthread_mutex_lock(&mutex);
+	unsigned long start;
+	unsigned long finish;
+	start = time_cal();
 	while (1) 
 	{
-		// pick up left fork
+		if (data->index % 2 != 0)
+			usleep(100);
+		finish = time_cal();
+		printf("%ld %d is thinking\n", (finish - start), data->index);
+
 		pthread_mutex_lock(data->left_fork);
 		
-		// pick up right fork
+		finish = time_cal();
+		printf("%ld %d has taken a fork\n", (finish - start), data->index);
+		
 		pthread_mutex_lock(data->right_fork);
 		
-		// eat
-		// ...
-		printf("philosopher %d is eating\n", data->index);
+		finish = time_cal();
+		printf("%ld %d has taken a fork\n", (finish - start), data->index);
 		
+		finish = time_cal();
+		printf("%ld %d is eating\n", (finish - start), data->index);
+		usleep(data->ph1->tte * 1000);
+
 		// put down right fork
 		pthread_mutex_unlock(data->right_fork);
-		
+
 		// put down left fork
 		pthread_mutex_unlock(data->left_fork);
-		
-		printf("philosopher %d is sleeping\n", data->index);
-		sleep(2);
-		// think
-		// ...
+
+		finish = time_cal();
+		printf("%ld %d is sleeping\n", (finish - start), data->index);
+		usleep(data->ph1->tts * 1000);
 	}
-	// pthread_mutex_unlock(&mutex);
 	free(arg);
 	return (0);
 }
@@ -95,9 +103,7 @@ void	*routine(void *arg)
 void	create_threads(t_ph *ph)
 {
 	int	i;
-	// int	*index;
 	t_PH_Data	*data;
-	int fork_indices[4] = {0, 1, 2, 3};
 	
 	ph->th = malloc(sizeof(pthread_t) * ph->n_ph);
 	if (!ph->th)
@@ -105,18 +111,36 @@ void	create_threads(t_ph *ph)
 	i = 0;
 	while (i < ph->n_ph)
 	{
-		// index = malloc(sizeof(int));
 		data = malloc(sizeof(t_PH_Data));
 		data->index = i;
-		data->left_fork = &ph->fork_locks[fork_indices[i]];
-		data->right_fork = &ph->fork_locks[fork_indices[(i + 1) % ph->n_ph]];
-		// *index = i;
+		data->left_fork = &ph->fork_locks[i];
+		data->right_fork = &ph->fork_locks[(i + 1) % ph->n_ph];
+		data->ph1 = ph;
 		if (pthread_create(&ph->th[i], NULL, &routine, data) != 0)
 			error_mes("pthread_create return error\n");
-		// printf("thread : %d has created\n", i);
 		i++;
 	}
 }
+// void	create_threads(t_ph *ph)
+// {
+// 	int	i;
+// 	t_PH_Data	*data;
+	
+// 	ph->th = malloc(sizeof(pthread_t) * ph->n_ph);
+// 	if (!ph->th)
+// 		error_mes("malloc retun NULL");
+// 	i = 0;
+// 	while (i < ph->n_ph)
+// 	{
+// 		data = malloc(sizeof(t_PH_Data));
+// 		data->index = i;
+// 		data->left_fork = &ph->fork_locks[i];
+// 		data->right_fork = &ph->fork_locks[(i + 1) % ph->n_ph];
+// 		if (pthread_create(&ph->th[i], NULL, &routine, data) != 0)
+// 			error_mes("pthread_create return error\n");
+// 		i++;
+// 	}
+// }
 
 void	mutex_init(t_ph *ph)
 {
@@ -147,6 +171,5 @@ int	main(int ac, char **av)
 		printf("thread : %d has finished\n", i);
 		i++;
 	}
-	
 	return (0);
 }

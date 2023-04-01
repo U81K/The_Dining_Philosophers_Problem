@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/03/30 22:19:55 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/01 02:15:35 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <pthread.h>
+#include <sys/time.h>
 
 typedef struct	s_ph
 {
@@ -30,6 +31,14 @@ typedef struct	s_ph
 	pthread_t	*th;
 	pthread_mutex_t *fork_locks;
 }				t_ph;
+
+typedef struct	s_PH_Data
+{
+	int index;
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t *right_fork;
+	t_ph			*ph1;
+}				t_PH_Data;
 
 int		ft_atoi(const char *str);
 void	ft_putstr_fd(char *s, int fd);
