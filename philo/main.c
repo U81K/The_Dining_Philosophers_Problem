@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/01 02:18:40 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/01 02:41:31 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,41 +59,30 @@ unsigned long time_cal(void)
 
 void	*routine(void *arg)
 {
-	t_PH_Data *data;
+	t_PH_Data		*data;
+	unsigned long	start;
 	
 	data = (t_PH_Data *)arg;
-	unsigned long start;
-	unsigned long finish;
 	start = time_cal();
 	while (1) 
 	{
 		if (data->index % 2 != 0)
 			usleep(100);
-		finish = time_cal();
-		printf("%ld %d is thinking\n", (finish - start), data->index);
+		printf("%ld %d is thinking\n", (time_cal() - start), data->index);
 
 		pthread_mutex_lock(data->left_fork);
-		
-		finish = time_cal();
-		printf("%ld %d has taken a fork\n", (finish - start), data->index);
-		
+		printf("%ld %d has taken a fork\n", (time_cal() - start), data->index);
+
 		pthread_mutex_lock(data->right_fork);
-		
-		finish = time_cal();
-		printf("%ld %d has taken a fork\n", (finish - start), data->index);
-		
-		finish = time_cal();
-		printf("%ld %d is eating\n", (finish - start), data->index);
+		printf("%ld %d has taken a fork\n", (time_cal() - start), data->index);
+
+		printf("%ld %d is eating\n", (time_cal() - start), data->index);
 		usleep(data->ph1->tte * 1000);
 
-		// put down right fork
 		pthread_mutex_unlock(data->right_fork);
-
-		// put down left fork
 		pthread_mutex_unlock(data->left_fork);
 
-		finish = time_cal();
-		printf("%ld %d is sleeping\n", (finish - start), data->index);
+		printf("%ld %d is sleeping\n", (time_cal() - start), data->index);
 		usleep(data->ph1->tts * 1000);
 	}
 	free(arg);
@@ -121,31 +110,11 @@ void	create_threads(t_ph *ph)
 		i++;
 	}
 }
-// void	create_threads(t_ph *ph)
-// {
-// 	int	i;
-// 	t_PH_Data	*data;
-	
-// 	ph->th = malloc(sizeof(pthread_t) * ph->n_ph);
-// 	if (!ph->th)
-// 		error_mes("malloc retun NULL");
-// 	i = 0;
-// 	while (i < ph->n_ph)
-// 	{
-// 		data = malloc(sizeof(t_PH_Data));
-// 		data->index = i;
-// 		data->left_fork = &ph->fork_locks[i];
-// 		data->right_fork = &ph->fork_locks[(i + 1) % ph->n_ph];
-// 		if (pthread_create(&ph->th[i], NULL, &routine, data) != 0)
-// 			error_mes("pthread_create return error\n");
-// 		i++;
-// 	}
-// }
 
 void	mutex_init(t_ph *ph)
 {
 	int				i;
-	
+
 	ph->fork_locks = malloc(sizeof(pthread_mutex_t) * ph->n_ph);
 	if (!ph->fork_locks)
 		error_mes("malloc return NULL");
@@ -157,7 +126,7 @@ void	mutex_init(t_ph *ph)
 int	main(int ac, char **av)
 {
 	t_ph		ph;
-	
+
 	if (ac < 5 || ac > 6)
 		error_mes("invalide args\n");
 	args_checker(ac, av, &ph);

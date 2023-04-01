@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/01 02:15:35 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/01 02:40:56 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct	s_PH_Data
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 	t_ph			*ph1;
+	unsigned long	start;
 }				t_PH_Data;
 
 int		ft_atoi(const char *str);
