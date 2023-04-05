@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/04 02:29:49 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/04 22:46:47 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,17 @@ typedef struct	s_ph
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 	unsigned long	start;
-	unsigned		last_meal;
-	unsigned		thinking;
+	int				first_meal;
+	int				last_meal;
+	int				i;
+	int				thinking;
 	int				ttd;
 	int				tte;
 	int				tts;
 	int				n_each_ph_me;
 	int				n_ph;
+	int				is_dead;
+	int				stop;
 }				t_ph;
 
 typedef struct	s_global

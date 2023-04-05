@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/04 02:35:46 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/05 01:30:16 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	args_checker(int ac, char **av, t_global *ph)
 	ph->tts = ft_atoi(av[4]);
 	if (ac == 6)
 		ph->n_each_ph_me = ft_atoi(av[5]);
+	else if (ac == 5)
+		ph->n_each_ph_me = 2147483646;
 	return (0);	
 }
 
@@ -61,87 +63,87 @@ void	*routine(void *arg)
 {
 	t_ph			*data;
 	unsigned long	start;
-	unsigned long	tmp;
 	int				eat_times;
-	int				i;
 	
-	data = (t_ph *)arg;
-	start = time_cal();
-	data->start = start;
-	eat_times = data->n_each_ph_me;
-	i = 0;
-	tmp = 0;
+	pthread_mutex_t thinking;
+	pthread_mutex_t last_meal;
+	pthread_mutex_t eat;
+	
+	pthread_mutex_lock(&eat);
+		data = (t_ph *)arg;
+		start = time_cal();
+		data->start = start;
+		eat_times = data->n_each_ph_me;
+	pthread_mutex_unlock(&eat);
+	
 	while (1)
 	{
-		// printf("%d ===>thinking===>%ld\n", data->index, data->thinking);
-		printf("%ld %d is thinking\n", (time_cal() - start), data->index);
+		pthread_mutex_lock(&thinking);
+		data->thinking = time_cal() - start;
+		pthread_mutex_unlock(&thinking);
 		if (eat_times == 0)
 			break ;
-		data->thinking = time_cal() - start;
+		if (data->n_each_ph_me == 0)
+			break ;
 		if (data->index % 2 != 0)
 			usleep(100);
 			pthread_mutex_lock(data->left_fork);
 		printf("%ld %d has taken a fork\n", (time_cal() - start), data->index);
 			pthread_mutex_lock(data->right_fork);
 		printf("%ld %d has taken a fork\n", (time_cal() - start), data->index);
-		// if (i == 0 && (time_cal() - start) >= ((unsigned long)data->ph1->ttd * 1000))
+			data->first_meal = time_cal() - start;
+		// printf("%d ===>time of eating ===>%d\n", data->index, data->first_meal);
+		// else
 		// {
-		// 	printf("%ld %d died\n", (time_cal() - start), data->index);
-		// 	exit(0);
-		// 	pthread_mutex_unlock(data->right_fork);
-		// 	pthread_mutex_unlock(data->left_fork);
-		// 	break ;
+		// 	data->last_meal = data->first_meal;
 		// }
-		// i++;
-		// if (i != 0 && ((time_cal() - start) - tmp) >= ((unsigned long)data->ph1->ttd))
-		// {
-		// 	printf("%ld %d died\n", (time_cal() - start), data->index);
-		// 	// exit(0);
-		// 	pthread_mutex_unlock(data->right_fork);
-		// 	pthread_mutex_unlock(data->left_fork);
-		// 	break ;
-		// }
-		// if (i != 0)
-		// 	tmp = (time_cal() - start) - tmp;
-		data->last_meal = time_cal() - start;
-		// printf("%d ===>last_meal ===>%ld\n", data->index, data->last_meal);
+		// printf("%d ===>last_meal ===>%d\n", data->index, data->last_meal);
 		printf("%ld %d is eating\n", (time_cal() - start), data->index);
 		usleep(data->tte * 1000);
-		eat_times--;
+			eat_times--;
 			pthread_mutex_unlock(data->right_fork);
 			pthread_mutex_unlock(data->left_fork);
 
 		printf("%ld %d is sleeping\n", (time_cal() - start), data->index);
 		usleep(data->tts * 1000);
+		printf("%ld %d is thinking\n", (time_cal() - start), data->index);
+		
+		pthread_mutex_lock(&last_meal);
+			data->last_meal = time_cal() - start;
+		pthread_mutex_unlock(&last_meal);
+		// printf("%d ===>is thinking ==> %d\n", data->index, data->last_meal);
+		// }
+		// 	data->last_meal = time_cal() - start;
+		// printf("%d ===>last_meal ===>%d\n", data->index, data->last_meal);
 	}
 	// free(arg);
 	return (NULL);
 }
 
-int check_if_dead(t_ph *phs)
-{
-	long	start;
-	long	tmp;
-	int		i;
+// int check_if_dead(t_ph *phs)
+// {
+// 	long	start;
+// 	long	tmp;
+// 	int		i;
 	
-	// sleep(1);
-	start = phs[0].start;
-	tmp = 0;
-	i = 0;
-	while (1)
-	{
-		if (i == phs[i].n_ph)
-			i = 0;
-		// tmp = phs[i].last_meal;
-		if ((phs[i].thinking  - phs[i].last_meal) >= (long)phs[i].ttd)
-		{
-			printf("%ld %d died\n", (time_cal() - start), phs[i].index);
-			exit(0);
-		}
-		i++;
-	}
-	return (0);
-}
+// 	start = phs[0].start;
+// 	tmp = 0;
+// 	i = 0;
+// 	while (1)
+// 	{
+// 		// usleep(100);
+// 		if (i == phs[i].n_ph - 1)
+// 			i = 0;
+// 		if ((phs[i].last_meal - phs[i].first_meal) >= phs[i].ttd)
+// 		{
+// 			printf("%ld %d died\n", (time_cal() - start), phs[i].index);
+// 			exit(0);
+// 			// phs[i].is_dead = -1;
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 void	create_threads(t_global *glo)
 {
@@ -152,6 +154,11 @@ void	create_threads(t_global *glo)
 		error_mes("malloc retun NULL");
 	i = 0;
 	glo->phs = malloc(sizeof(t_ph) * glo->n_ph);
+	if (glo->n_ph == 1)
+	{
+		printf("0 0 died\n");
+		return ;
+	}
 	while (i < glo->n_ph)
 	{
 		glo->phs[i].index = i;
@@ -162,6 +169,7 @@ void	create_threads(t_global *glo)
 		glo->phs[i].n_each_ph_me = glo->n_each_ph_me;
 		glo->phs[i].n_ph = glo->n_ph;
 		glo->phs[i].ttd = glo->ttd;
+		glo->phs[i].is_dead = 1;
 		if (pthread_create(&glo->th[i], NULL, &routine, &glo->phs[i]) != 0)
 			error_mes("pthread_create return error\n");
 		i++;
@@ -199,7 +207,7 @@ int	main(int ac, char **av)
 		// printf("thread : %d has finished\n", i);
 		i++;
 	}
-	check_if_dead(glo.phs);
+	// check_if_dead(glo.phs);
 	// printf("====>%d\n", check_philosopher_alive(1, &ph));
 	return (0);
 }
