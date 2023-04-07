@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/06 05:49:46 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/07 00:42:48 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void	*routine(void *arg)
 	// pthread_mutex_t eat;
 	// pthread_mutex_t stop;
 	
-	// pthread_mutex_init(&stop, NULL);
 	// pthread_mutex_init(&eat, NULL);
 	// pthread_mutex_init(&eat_count, NULL);
 	
@@ -79,6 +78,8 @@ void	*routine(void *arg)
 		start = time_cal();
 		data->start = start;
 		eat_times = data->n_each_ph_me;
+		data->last_meal = start;
+	// pthread_mutex_init(data->stopp, NULL);
 	// pthread_mutex_unlock(&eat);
 	while (1)
 	{
@@ -86,18 +87,22 @@ void	*routine(void *arg)
 		// data->thinking = time_cal() - start;
 		// pthread_mutex_unlock(&thinking);
 		// pthread_mutex_lock(&stop);
-		if (*data->stop == 0)
-			break ;
 		// printf("===>%d\n", *data->stop);
 		// pthread_mutex_unlock(&stop);
 		printf("%ld %d is thinking\n", (time_cal() - start), data->index);
-		if (data->n_each_ph_me == 1)
+		// pthread_mutex_lock(data->stopp);
+		if (data->n_each_ph_me == 0)
 		{
 			// pthread_mutex_unlock(data->right_fork);
 			// pthread_mutex_unlock(data->left_fork);
-			// data->stop = 0;
-			break ;
+			// exit(0);
+			*data->stop = 0;
+			// break ;
+			return (NULL);
 		}
+		if (*data->stop == 0)
+			break ;
+		// pthread_mutex_lock(data->stopp);
 		if (data->index % 2 != 0)
 			usleep(100);
 			pthread_mutex_lock(data->left_fork);
@@ -105,11 +110,7 @@ void	*routine(void *arg)
 			pthread_mutex_lock(data->right_fork);
 		printf("%ld %d has taken a fork\n", (time_cal() - start), data->index);
 		// pthread_mutex_lock(&last_meal);
-		if (data->i == 0)
-			data->last_meal = start;
-		else
-			data->last_meal = time_cal();
-		data->i++;
+		data->last_meal = time_cal();
 		// pthread_mutex_unlock(&last_meal);
 			// data->first_meal = time_cal() - start;
 		// printf("%d ===>time of eating ===>%d\n", data->index, data->first_meal);
@@ -135,6 +136,21 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
+int	stop_check(t_ph *phs)
+{
+	int i;
+
+	i = 0;
+	while (i < phs[i].n_ph)
+	{
+		if (phs[i].n_each_ph_me == 0)
+			i++;
+		else
+			return (0);
+	}
+	return (1);
+}
+
 int check_if_dead(t_ph *phs)
 {
 	int		i;
@@ -142,18 +158,21 @@ int check_if_dead(t_ph *phs)
 	
 	n_ph = phs[0].n_ph;
 	i = 0;
-	usleep(1000);
+	// usleep(100000000);
 	while (1)
 	{
 		if (i == n_ph)
 			i = 0;
+		if (stop_check(phs) == 1)
+			return 0;
 			// break ;
-		// printf("%d %lu\n", phs[i].index, (time_cal() - phs[i].last_meal));
-		// printf("%ld %d died\n", (time_cal() - phs[i].start), phs[i].index);
+		// printf("%ld %d died\n", (phs[i].start), phs[i].index);
+		// printf("%ld %d died\n", time_cal(), phs[i].index);
+		// usleep(100000000);
 		if ((time_cal() - phs[i].last_meal) >= (unsigned long)phs[i].ttd)
 		{
-			printf("%ld %d died\n", (time_cal() - phs[i].start), phs[i].index);
 			*phs[i].stop = 0;
+			printf("%ld %d died\n", (time_cal() - phs[i].start), phs[i].index);
 			break ;
 		}
 		i++;
@@ -170,11 +189,6 @@ void	create_threads(t_global *glo, int *stop)
 		error_mes("malloc retun NULL");
 	i = 0;
 	glo->phs = malloc(sizeof(t_ph) * glo->n_ph);
-	if (glo->n_ph == 1)
-	{
-		printf("0 0 died\n");
-		return ;
-	}
 	while (i < glo->n_ph)
 	{
 		glo->phs[i].index = i;
@@ -182,10 +196,7 @@ void	create_threads(t_global *glo, int *stop)
 		glo->phs[i].right_fork = &glo->fork_locks[(i + 1) % glo->n_ph];
 		glo->phs[i].tte = glo->tte;
 		glo->phs[i].tts = glo->tts;
-		if (i % 2 == 0)
-			glo->phs[i].n_each_ph_me = glo->n_each_ph_me + 1;
-		else
-			glo->phs[i].n_each_ph_me = glo->n_each_ph_me;
+		glo->phs[i].n_each_ph_me = glo->n_each_ph_me;
 		glo->phs[i].n_ph = glo->n_ph;
 		glo->phs[i].ttd = glo->ttd;
 		glo->phs[i].is_dead = 1;
@@ -222,8 +233,10 @@ int	main(int ac, char **av)
 	*stop = 1;
 	mutex_init(&glo);
 	create_threads(&glo, stop);
+	// sleep(12);
 	int			i;
 	i = 0;
+	usleep(1000);
 	check_if_dead(glo.phs);
 	// while (i < glo.n_ph)
 	// {
