@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:43:01 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/03/30 20:24:42 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/10 02:14:54 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-void	error_mes(char *str)
+int		error_mes(char *str)
 {
 	ft_putstr_fd(str, 2);
-	exit(2);
+	return(2);
 }

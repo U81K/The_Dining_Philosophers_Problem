@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/06 23:31:31 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/13 01:29:07 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,12 @@ typedef struct	s_ph
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 	pthread_mutex_t *stopp;
+	pthread_mutex_t	*think;
+	pthread_mutex_t *mutex_shared;
+
 	unsigned long	start;
-	unsigned long	first_meal;
+	unsigned long	tmp;
+	unsigned long	tmp2;
 	unsigned long	last_meal;
 	int				i;
 	int				thinking;
@@ -56,6 +60,6 @@ typedef struct	s_global
 
 int		ft_atoi(const char *str);
 void	ft_putstr_fd(char *s, int fd);
-void	error_mes(char *str);
+int		error_mes(char *str);
 
 #endif
