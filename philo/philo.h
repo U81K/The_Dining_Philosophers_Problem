@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/13 22:49:03 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/24 16:36:00 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,10 @@ typedef struct	s_global
 int		ft_atoi(const char *str);
 void	ft_putstr_fd(char *s, int fd);
 int		error_mes(char *str);
+int check_if_nb(char *str);
+int args_checker(int ac, char **av, t_global *ph);
+unsigned long time_cal(void);
+int stop_check(t_ph *phs);
+int check_if_dead(t_ph *phs);
 
 #endif
