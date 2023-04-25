@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:43:01 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/10 02:14:54 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/04/25 12:07:00 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,17 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-int		error_mes(char *str)
+int	error_mes(char *str)
 {
 	ft_putstr_fd(str, 2);
-	return(2);
+	return (2);
+}
+
+void	destroy_mutex(t_global *glo)
+{
+	int	i;
+
+	i = 0;
+	while (i < glo->n_ph)
+		pthread_mutex_destroy(&glo->fork_locks[i++]);
 }
