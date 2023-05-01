@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:43:01 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/04/25 12:07:00 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/01 12:45:07 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,16 @@ void	destroy_mutex(t_global *glo)
 	i = 0;
 	while (i < glo->n_ph)
 		pthread_mutex_destroy(&glo->fork_locks[i++]);
+}
+
+void	detach(t_global *glo)
+{
+	int	i;
+
+	i = 0;
+	while (i < glo->n_ph)
+	{
+		pthread_detach(glo->th[i]);
+		i++;
+	}
 }
