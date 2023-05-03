@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/02 17:55:37 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:14:43 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@
 #include <semaphore.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <signal.h>
+#include <pthread.h>
 
 typedef struct s_ph
 {
 	int				index;
+	pid_t			pid;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*stopp;
@@ -40,6 +43,7 @@ typedef struct s_ph
 	int				n_each_ph_me;
 	int				n_ph;
 	int				*stop;
+	sem_t			*sem;
 }				t_ph;
 
 typedef struct s_global
@@ -52,6 +56,7 @@ typedef struct s_global
 	sem_t			*mutex;
 	t_ph			*phs;
 	unsigned long	start;
+	pthread_t		*thr;
 }				t_global;
 
 int		args_checker(int ac, char **av, t_global *ph);

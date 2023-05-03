@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:15 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/02 18:33:55 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:25:08 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,50 +22,88 @@ unsigned long	time_cal(void)
 	return (i);
 }
 
-void	routine(t_global *glo, int i, int fork_id_r, int fork_id_l)
+void	routine(t_ph *data)
 {
-	// while (1)
-	// {
-		printf("%ld %d is thinking\n", (time_cal() - glo->start), glo->phs[i].index);
-		// pthread_mutex_lock(data->left_fork);
-		sem_wait(&glo->mutex[i % glo->n_ph]);
-		printf("%ld %d has taken a fork\n", (time_cal() - glo->start), glo->phs[i].index);
-		// pthread_mutex_lock(data->right_fork);
-		sem_wait(&glo->mutex[(i + 1) % glo->n_ph]);
-		printf("%ld %d has taken a fork\n", (time_cal() - glo->start), glo->phs[i].index);
-		printf("%ld %d is eating\n", (time_cal() - glo->start), glo->phs[i].index);
-		usleep(glo->tte * 1000);
-		sem_post(&glo->mutex[i % glo->n_ph]);
-		sem_post(&glo->mutex[(i + 1) % glo->n_ph]);
-		// pthread_mutex_unlock(data->right_fork);
-		// pthread_mutex_unlock(data->left_fork);
-		printf("%ld %d is sleeping\n", (time_cal() - glo->start), glo->phs[i].index);
-		usleep(glo->tts * 1000);
-	// }
+	while (1)
+	{
+		printf("%ld %d is thinking\n", (time_cal() - data->start), data->index);
+		sem_wait(data->sem);
+		printf("%ld %d has taken a fork\n", (time_cal() - data->start), data->index);
+		sem_wait(data->sem);
+		printf("%ld %d has taken a fork\n", (time_cal() - data->start), data->index);
+		data->last_meal = time_cal();
+		printf("%ld %d is eating\n", (time_cal() - data->start), data->index);
+		usleep(data->tte * 1000);
+		if (data->n_each_ph_me-- == 0)
+			exit(0);
+		sem_post(data->sem);
+		sem_post(data->sem);
+		printf("%ld %d is sleeping\n", (time_cal() - data->start), data->index);
+		usleep(data->tts * 1000);
+	}
+}
+
+void	*thr_routine(void *args)
+{
+	t_ph *data;
+
+	data = (t_ph *)args;
+	int i;
+	i  = 0;
+	usleep(1000);
+	while(1)
+	{
+		if (i == glo->n_ph)
+			i = 0;
+		if ((time_cal() - glo->phs[i].last_meal) >= (unsigned long)glo->ttd)
+		{
+			printf("%ld %d died\n", (time_cal() - glo->start), glo->phs[i].index);
+			exit(0);
+		}
+		i++;
+		usleep(1000);
+	}
+	return (NULL);
 }
 
 void	create_proc(t_global *glo)
 {
 	int	i;
 	pid_t	pid;
-
-	i = 1;
-	// printf("main proc %d\n", getpid());
+	sem_t *sem;
+	i = 0;
+	glo->thr = malloc(sizeof(pthread_t) * glo->n_ph);
 	glo->start = time_cal();
-	while (i <= glo->n_ph)
+	sem_unlink("/sema");
+	sem = sem_open("/sema", O_CREAT , 0644, glo->n_ph);
+	while (i < glo->n_ph)
 	{
 		pid = fork();
 		if (pid == 0)
 		{
 			glo->phs[i].index = i;
-			routine(glo, i, i, i + 1);
+			glo->phs[i].tte = glo->tte;
+			glo->phs[i].tts = glo->tts;
+			glo->phs[i].ttd = glo->ttd;
+			glo->phs[i].start = glo->start;
+			glo->phs[i].sem = sem;
+			glo->phs[i].n_each_ph_me = glo->n_each_ph_me + 2;
+			pthread_create(&glo->thr[i], NULL, &thr_routine, &glo->phs[i]);
+			routine(&(glo->phs[i]));
 			exit(0);
 		}
-		// else
-		// 	printf("parent id is %d\n", getpid());
+		else
+			glo->phs[i].pid = pid;
 		i++;
 	}
-	// printf("%d died\n", getpid() +2 - waitpid(-1, NULL, 0));
+	// check_if_dead(glo->phs);
+	waitpid(-1, NULL, 0);
+	int j;
+	j = 0;
+	while (j < glo->n_ph)
+		kill(glo->phs[j++].pid, 0);
+	sem_close(sem);
+	sem_unlink("/sema");
 }
 
 int main(int ac, char **av)
