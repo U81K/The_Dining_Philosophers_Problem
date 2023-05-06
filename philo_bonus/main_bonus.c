@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:15 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/06 11:05:35 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/06 11:15:24 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,10 +149,5 @@ int main(int ac, char **av)
 	glo.mutex = malloc(sizeof(sem_t) * glo.n_ph);
 	glo.phs = malloc(sizeof(t_ph) * glo.n_ph);
 	create_proc(&glo);
-	// printf("%d\n", glo.mutex);
-	// sem_wait(&mutex);
-	// printf("%d\n", mutex);
-	// sem_post(&mutex);
-	// printf("%d\n", mutex);
 	return (0);
 }

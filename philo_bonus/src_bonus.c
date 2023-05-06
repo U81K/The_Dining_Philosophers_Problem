@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:37 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/02 15:50:23 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/06 11:10:44 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	args_checker(int ac, char **av, t_global *ph)
 		ph->n_each_ph_me = ft_atoi(av[5]);
 	else if (ac == 5)
 		ph->n_each_ph_me = 2147483646;
+	if (ph->n_ph == 0 || ph->n_each_ph_me == 0)
+		return (2);
 	return (0);
 }
 
