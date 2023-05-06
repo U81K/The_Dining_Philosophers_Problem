@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/03 18:14:43 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/05 21:55:21 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ typedef struct s_ph
 	int				n_ph;
 	int				*stop;
 	sem_t			*sem;
+	sem_t			*dead;
+	sem_t			*print;
 }				t_ph;
 
 typedef struct s_global
