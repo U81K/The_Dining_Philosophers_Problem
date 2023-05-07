@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:37 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/06 11:10:44 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:25:15 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,14 @@ void	ft_putstr_fd(char *s, int fd)
 	{
 		write(fd, &s[i++], 1);
 	}
+}
+
+unsigned long	time_cal(void)
+{
+	unsigned long	i;
+	struct timeval	current_time;
+
+	gettimeofday(&current_time, NULL);
+	i = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (i);
 }

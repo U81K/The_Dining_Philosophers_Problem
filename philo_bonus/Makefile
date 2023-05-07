@@ -6,7 +6,7 @@
 #    By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/02 14:36:53 by bgannoun          #+#    #+#              #
-#    Updated: 2023/05/05 19:21:59 by bgannoun         ###   ########.fr        #
+#    Updated: 2023/05/07 14:21:09 by bgannoun         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ OBJ		=	$(SRC:.c=.o)
 
 SRC		=	main_bonus.c \
 			src_bonus.c \
+			create_pro.c \
 
 
 $(NAME)	:	$(OBJ)

@@ -6,35 +6,26 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/07 14:07:21 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/07 15:22:51 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_BONUS_H
-#define PHILO_BONUS_H
+# define PHILO_BONUS_H
 
-#include <stdio.h>
-#include <unistd.h>
-#include <semaphore.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <pthread.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <semaphore.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <signal.h>
+# include <pthread.h>
 
 typedef struct s_ph
 {
 	int				index;
 	pid_t			pid;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*stopp;
-	pthread_mutex_t	*think;
-	pthread_mutex_t	*mutex_shared;
-	pthread_mutex_t	*m_n_each_ph_me;
-	pthread_mutex_t	*m_last_meal;
 	unsigned long	start;
-	unsigned long	tmp;
-	unsigned long	tmp2;
 	unsigned long	last_meal;
 	int				thinking;
 	int				ttd;
@@ -42,7 +33,6 @@ typedef struct s_ph
 	int				tts;
 	int				n_each_ph_me;
 	int				n_ph;
-	int				*stop;
 	sem_t			*sem;
 	sem_t			*dead;
 	sem_t			*print;
@@ -55,17 +45,20 @@ typedef struct s_global
 	int				tte;
 	int				tts;
 	int				n_each_ph_me;
-	sem_t			*mutex;
-	t_ph			*phs;
 	unsigned long	start;
+	t_ph			*phs;
 	pthread_t		*thr;
 	sem_t			*sem;
 	sem_t			*dead;
 	sem_t			*print;
 }				t_global;
 
-int		args_checker(int ac, char **av, t_global *ph);
-void	ft_putstr_fd(char *s, int fd);
-int		ft_atoi(const char *str);
+int				args_checker(int ac, char **av, t_global *ph);
+void			ft_putstr_fd(char *s, int fd);
+int				ft_atoi(const char *str);
+void			create_proc(t_global *glo);
+void			routine(t_ph *data);
+void			*thr_routine(void *args);
+unsigned long	time_cal(void);
 
 #endif
