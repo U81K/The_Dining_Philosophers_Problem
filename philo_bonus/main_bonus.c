@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:15 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/06 11:15:24 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:12:54 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,7 @@ void	routine(t_ph *data)
 			sem_wait(data->print);
 		printf("%ld %d has taken a fork\n", (time_cal() - data->start), data->index);
 			sem_post(data->print);
-		
-		// sem_wait(data->dead);
 		data->last_meal = time_cal();
-		// sem_post(data->dead);
-		
 		data->tmp2 = time_cal();
 			sem_wait(data->print);
 		printf("%ld %d is eating\n", (time_cal() - data->start), data->index);
@@ -87,37 +83,63 @@ void	*thr_routine(void *args)
 	return (NULL);
 }
 
+void	kill_proc(t_global *glo)
+{
+	int	j;
+
+	j = 0;
+	while (j < glo->n_ph)
+		kill(glo->phs[j++].pid, SIGKILL);
+	sem_close(glo->sem);
+	sem_close(glo->dead);
+	sem_close(glo->print);
+	sem_unlink("/sema");
+	sem_unlink("/dead");
+	sem_unlink("/print");
+}
+
+void	init_v(t_global *glo, int i)
+{
+	glo->phs[i].index = i + 1;
+	glo->phs[i].tte = glo->tte;
+	glo->phs[i].tts = glo->tts;
+	glo->phs[i].ttd = glo->ttd;
+	glo->phs[i].start = glo->start;
+	glo->phs[i].n_each_ph_me = glo->n_each_ph_me + 2;
+	glo->phs[i].sem = glo->sem;
+	glo->phs[i].dead = glo->dead;
+	glo->phs[i].print = glo->print;
+}
+
 void	create_proc(t_global *glo)
 {
 	int	i;
 	pid_t	pid;
-	sem_t *sem;
-	sem_t	*dead;
-	sem_t	*print;
 	
 	i = 0;
 	glo->thr = malloc(sizeof(pthread_t) * glo->n_ph);
 	sem_unlink("/sema");
 	sem_unlink("/dead");
 	sem_unlink("/print");
-	sem = sem_open("/sema", O_CREAT , 0644, glo->n_ph);
-	dead = sem_open("/dead", O_CREAT , 0644, 1);
-	print = sem_open("/print", O_CREAT, 0644, 1);
+	glo->sem = sem_open("/sema", O_CREAT , 0644, glo->n_ph);
+	glo->dead = sem_open("/dead", O_CREAT , 0644, 1);
+	glo->print = sem_open("/print", O_CREAT, 0644, 1);
 	glo->start = time_cal();
 	while (i < glo->n_ph)
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-			glo->phs[i].index = i + 1;
-			glo->phs[i].tte = glo->tte;
-			glo->phs[i].tts = glo->tts;
-			glo->phs[i].ttd = glo->ttd;
-			glo->phs[i].start = glo->start;
-			glo->phs[i].sem = sem;
-			glo->phs[i].n_each_ph_me = glo->n_each_ph_me + 2;
-			glo->phs[i].dead = dead;
-			glo->phs[i].print = print;
+			// glo->phs[i].index = i + 1;
+			// glo->phs[i].tte = glo->tte;
+			// glo->phs[i].tts = glo->tts;
+			// glo->phs[i].ttd = glo->ttd;
+			// glo->phs[i].start = glo->start;
+			// glo->phs[i].n_each_ph_me = glo->n_each_ph_me + 2;
+			// glo->phs[i].sem = glo->sem;
+			// glo->phs[i].dead = glo->dead;
+			// glo->phs[i].print = glo->print;
+			init_v(glo, i);
 			pthread_create(&glo->thr[i], NULL, &thr_routine, &glo->phs[i]);
 			routine(&(glo->phs[i]));
 			exit(0);
@@ -127,15 +149,9 @@ void	create_proc(t_global *glo)
 		i++;
 	}
 	waitpid(-1, NULL, 0);
-	int j;
-	j = 0;
-	while (j < glo->n_ph)
-		kill(glo->phs[j++].pid, SIGKILL);
-	sem_close(sem);
-	sem_unlink("/sema");
-	sem_unlink("/dead");
-	sem_unlink("/print");
+	kill_proc(glo);
 }
+
 
 int main(int ac, char **av)
 {

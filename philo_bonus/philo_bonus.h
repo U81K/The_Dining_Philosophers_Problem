@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/05 21:55:21 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:07:21 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ typedef struct s_global
 	t_ph			*phs;
 	unsigned long	start;
 	pthread_t		*thr;
+	sem_t			*sem;
+	sem_t			*dead;
+	sem_t			*print;
 }				t_global;
 
 int		args_checker(int ac, char **av, t_global *ph);
