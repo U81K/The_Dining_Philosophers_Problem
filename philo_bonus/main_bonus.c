@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:15 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/07 15:29:51 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/08 16:21:10 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,7 @@ int	main(int ac, char **av)
 	}
 	glo.phs = malloc(sizeof(t_ph) * glo.n_ph);
 	create_proc(&glo);
+	free(glo.thr);
+	free(glo.phs);
 	return (0);
 }
