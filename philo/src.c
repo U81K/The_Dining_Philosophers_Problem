@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:31:27 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/06 11:13:28 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/08 15:33:31 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	stop_check(t_ph *phs)
 	return (1);
 }
 
-int	check_if_dead(t_ph *phs)
+int	check_if_dead(t_ph *phs, t_global *glo)
 {
 	int	i;
 	int	n_ph;
@@ -96,6 +96,7 @@ int	check_if_dead(t_ph *phs)
 		if ((time_cal() - phs[i].last_meal) >= (unsigned long)phs[i].ttd)
 		{
 			*phs[i].stop = 0;
+			pthread_mutex_lock(glo->dead);
 			printf("%ld %d died\n", (time_cal() - phs[i].start), phs[i].index);
 			break ;
 		}

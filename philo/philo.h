@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/01 13:07:11 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/08 16:05:45 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_ph
 	pthread_mutex_t	*mutex_shared;
 	pthread_mutex_t	*m_n_each_ph_me;
 	pthread_mutex_t	*m_last_meal;
+	pthread_mutex_t	*m_print;
 	unsigned long	start;
 	unsigned long	tmp;
 	unsigned long	tmp2;
@@ -55,6 +56,8 @@ typedef struct s_global
 	pthread_mutex_t	*fork_locks;
 	t_ph			*phs;
 	pthread_mutex_t	*mutex_shared;
+	pthread_mutex_t	*print;
+	pthread_mutex_t	*dead;
 }				t_global;
 
 int				ft_atoi(const char *str);
@@ -64,10 +67,11 @@ int				check_if_nb(char *str);
 int				args_checker(int ac, char **av, t_global *ph);
 unsigned long	time_cal(void);
 int				stop_check(t_ph *phs);
-int				check_if_dead(t_ph *phs);
+int				check_if_dead(t_ph *phs, t_global *glo);
 void			destroy_mutex(t_global *glo);
 void			detach(t_global *glo);
 int				mutex_init(t_global *ph);
 int				check_if_dead_1(int *i, int n_ph, t_ph *phs);
+void			*routine(void *arg);
 
 #endif
