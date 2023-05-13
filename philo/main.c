@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/08 16:05:15 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:40:35 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,12 @@ void	mutex_i(t_global *glo, pthread_mutex_t *n, pthread_mutex_t *l)
 	pthread_mutex_init(n, NULL);
 	pthread_mutex_init(l, NULL);
 	glo->print = malloc(sizeof(pthread_mutex_t));
-	glo->dead = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(glo->print, NULL);
-	pthread_mutex_init(glo->dead, NULL);
 }
 
 void	free_all(t_global *glo, int *stop)
 {
 	free(glo->print);
-	free(glo->dead);
 	free(glo->fork_locks);
 	free(glo->mutex_shared);
 	free(glo->th);

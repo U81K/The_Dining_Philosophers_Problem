@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/08 16:05:45 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:40:19 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_global
 	t_ph			*phs;
 	pthread_mutex_t	*mutex_shared;
 	pthread_mutex_t	*print;
-	pthread_mutex_t	*dead;
 }				t_global;
 
 int				ft_atoi(const char *str);

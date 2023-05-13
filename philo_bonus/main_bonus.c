@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:15 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/08 16:21:10 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/13 21:57:34 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	*thr_routine(void *args)
 	usleep(1000 * data->ttd);
 	while (1)
 	{
-		if (i == data->n_ph - 1)
+		if (i == data->n_ph)
 			i = 0;
 		sem_wait(data->print);
 		if ((time_cal() - data->last_meal) >= (unsigned long)data->ttd)
@@ -71,7 +71,6 @@ void	*thr_routine(void *args)
 		}
 		sem_post(data->print);
 		i++;
-		usleep(1000);
 	}
 	return (NULL);
 }
