@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:31:27 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/13 22:00:51 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:37:57 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ int	args_checker(int ac, char **av, t_global *ph)
 		ph->n_each_ph_me = ft_atoi(av[5]);
 	else if (ac == 5)
 		ph->n_each_ph_me = 2147483646;
-	if (ph->n_ph == 0 || ph->n_each_ph_me == 0)
+	if (max(ph) == 2)
+		return (2);
+	if (ph->n_ph <= 0 || ph->n_each_ph_me <= 0
+		|| ph->ttd <= 0 || ph->tte <= 0 || ph->tts <= 0)
 		return (2);
 	return (0);
 }
@@ -92,14 +95,12 @@ int	check_if_dead(t_ph *phs, t_global *glo)
 	{
 		if (i == n_ph)
 			i = 0;
-		if (check_if_dead_1(&i, n_ph, phs) == 0)
+		if (check_if_dead_1(&i, phs) == 0)
 			return (0);
 		pthread_mutex_lock(phs[i].m_last_meal);
 		if ((time_cal() - phs[i].last_meal) >= (unsigned long)phs[i].ttd)
 		{
-			*phs[i].stop = 0;
-			pthread_mutex_lock(glo->print);
-			printf("%ld %d died\n", (time_cal() - phs[i].start), phs[i].index);
+			con(phs, glo, i);
 			break ;
 		}
 		pthread_mutex_unlock(phs[i].m_last_meal);

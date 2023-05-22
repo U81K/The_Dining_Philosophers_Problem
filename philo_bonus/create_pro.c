@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 14:20:30 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/07 15:19:01 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/16 22:35:52 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,13 @@ void	create_proc(t_global *glo)
 	}
 	waitpid(-1, NULL, 0);
 	kill_proc(glo);
+}
+
+int	max(t_global *ph)
+{
+	if (ph->n_ph >= 2147483647 || ph->n_each_ph_me >= 2147483647
+		|| ph->ttd >= 2147483647 || ph->tte >= 2147483647
+		|| ph->tts >= 2147483647)
+		return (2);
+	return (0);
 }

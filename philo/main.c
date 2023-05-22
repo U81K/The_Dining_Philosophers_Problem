@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/12 21:40:35 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:33:06 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	create_threads(t_global *glo, int *stop,
 		glo->phs[i].m_last_meal = m_last_meal;
 		if (pthread_create(&glo->th[i], NULL, &routine, &glo->phs[i]) != 0)
 			return (2);
+		usleep (10);
 		i++;
 	}
 	return (0);

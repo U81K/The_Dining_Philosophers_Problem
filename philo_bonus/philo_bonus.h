@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:37:58 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/07 15:22:51 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:46:15 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ void			create_proc(t_global *glo);
 void			routine(t_ph *data);
 void			*thr_routine(void *args);
 unsigned long	time_cal(void);
+int				max(t_global *ph);
 
 #endif

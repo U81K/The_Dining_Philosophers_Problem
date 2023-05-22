@@ -6,12 +6,12 @@
 #    By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/28 17:37:28 by bgannoun          #+#    #+#              #
-#    Updated: 2023/05/08 16:06:38 by bgannoun         ###   ########.fr        #
+#    Updated: 2023/05/16 21:39:28 by bgannoun         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
-CFLAGS	= -Wall -Wextra -pthread -Werror
+CFLAGS	= -Wall -Wextra -pthread -Werror #-fsanitize=thread
 RM		= rm -rf
 OBJ		= $(SRC:.c=.o)
 

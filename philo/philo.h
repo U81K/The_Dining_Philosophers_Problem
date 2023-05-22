@@ -6,7 +6,7 @@
 /*   By: bgannoun <bgannoun@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 17:38:20 by bgannoun          #+#    #+#             */
-/*   Updated: 2023/05/12 21:40:19 by bgannoun         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:38:48 by bgannoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ int				check_if_dead(t_ph *phs, t_global *glo);
 void			destroy_mutex(t_global *glo);
 void			detach(t_global *glo);
 int				mutex_init(t_global *ph);
-int				check_if_dead_1(int *i, int n_ph, t_ph *phs);
+int				check_if_dead_1(int *i, t_ph *phs);
 void			*routine(void *arg);
+void			con(t_ph *phs, t_global *glo, int i);
+int				max(t_global *ph);
 
 #endif
